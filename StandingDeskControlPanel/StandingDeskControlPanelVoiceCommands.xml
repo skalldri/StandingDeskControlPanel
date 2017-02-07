@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+    <CommandSet xml:lang="en-us" Name="AdventureWorksCommandSet_en-us">
+        <AppName> Standing Desk </AppName>
+        <Example> Move to standing </Example>
+
+        <Command Name="moveDesk">
+            <Example> Move to standing </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> [move] to {height} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> move [my] {builtin:AppName} to {height} </ListenFor>
+            <Feedback> Moving desk to {height} </Feedback>
+            <VoiceCommandService Target="StandingDeskVoiceService"/>
+        </Command>
+
+        <PhraseList Label="destination">
+            <Item>Sitting</Item>
+            <Item>Standing</Item>
+            <Item>Lowest</Item>
+            <Item>Highest</Item>
+        </PhraseList>
+    </CommandSet>
+
+    <CommandSet xml:lang="en-gb" Name="AdventureWorksCommandSet_en-gb">
+        <AppName> Standing Desk </AppName>
+        <Example> Move to standing </Example>
+
+        <Command Name="moveDesk">
+            <Example> Move to standing </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> [move] to {height} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> move [my] {builtin:AppName} to {height} </ListenFor>
+            <Feedback> Moving desk to {height} </Feedback>
+            <VoiceCommandService Target="StandingDeskVoiceService"/>
+        </Command>
+
+        <PhraseList Label="destination">
+            <Item>Sitting</Item>
+            <Item>Standing</Item>
+            <Item>Lowest</Item>
+            <Item>Highest</Item>
+        </PhraseList>
+    </CommandSet>
+
+    <CommandSet xml:lang="en-au" Name="AdventureWorksCommandSet_en-au">
+        <AppName> Standing Desk </AppName>
+        <Example> Move to standing </Example>
+
+        <Command Name="moveDesk">
+            <Example> Move to standing </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> [move] to {height} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> move [my] {builtin:AppName} to {height} </ListenFor>
+            <Feedback> Moving desk to {height} </Feedback>
+            <VoiceCommandService Target="StandingDeskVoiceService"/>
+        </Command>
+
+        <PhraseList Label="destination">
+            <Item>Sitting</Item>
+            <Item>Standing</Item>
+            <Item>Lowest</Item>
+            <Item>Highest</Item>
+        </PhraseList>
+    </CommandSet>
+
+    <CommandSet xml:lang="en-in" Name="AdventureWorksCommandSet_en-in">
+        <AppName> Standing Desk </AppName>
+        <Example> Move to standing </Example>
+
+        <Command Name="moveDesk">
+            <Example> Move to standing </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> [move] to {height} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> move [my] {builtin:AppName} to {height} </ListenFor>
+            <Feedback> Moving desk to {height} </Feedback>
+            <VoiceCommandService Target="StandingDeskVoiceService"/>
+        </Command>
+
+        <PhraseList Label="destination">
+            <Item>Sitting</Item>
+            <Item>Standing</Item>
+            <Item>Lowest</Item>
+            <Item>Highest</Item>
+        </PhraseList>
+    </CommandSet>
+
+    <CommandSet xml:lang="en-ca" Name="AdventureWorksCommandSet_en-ca">
+        <AppName> Standing Desk </AppName>
+        <Example> Move to standing </Example>
+
+        <Command Name="moveDesk">
+            <Example> Move to standing </Example>
+            <ListenFor RequireAppName="BeforeOrAfterPhrase"> [move] to {height} </ListenFor>
+            <ListenFor RequireAppName="ExplicitlySpecified"> move [my] {builtin:AppName} to {height} </ListenFor>
+            <Feedback> Moving desk to {height} </Feedback>
+            <VoiceCommandService Target="StandingDeskVoiceService"/>
+        </Command>
+
+        <PhraseList Label="destination">
+            <Item>Sitting</Item>
+            <Item>Standing</Item>
+            <Item>Lowest</Item>
+            <Item>Highest</Item>
+        </PhraseList>
+    </CommandSet>
+</VoiceCommands>

@@ -40,6 +40,14 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+        
+      <Extensions>
+        <uap:Extension Category="windows.appService" EntryPoint="StandingDeskControlPanel.VoiceService.StandingDeskVoiceService">
+          <uap:AppService Name="StandingDeskVoiceService"/>
+        </uap:Extension>
+        <uap:Extension Category="windows.personalAssistantLaunch"/>
+      </Extensions>
+        
     </Application>
   </Applications>
 
