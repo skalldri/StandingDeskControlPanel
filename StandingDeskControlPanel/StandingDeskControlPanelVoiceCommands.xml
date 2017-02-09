@@ -12,7 +12,7 @@
             <VoiceCommandService Target="StandingDeskVoiceService"/>
         </Command>
 
-        <PhraseList Label="destination">
+        <PhraseList Label="height">
             <Item>Sitting</Item>
             <Item>Standing</Item>
             <Item>Lowest</Item>
@@ -32,7 +32,7 @@
             <VoiceCommandService Target="StandingDeskVoiceService"/>
         </Command>
 
-        <PhraseList Label="destination">
+        <PhraseList Label="height">
             <Item>Sitting</Item>
             <Item>Standing</Item>
             <Item>Lowest</Item>
@@ -52,7 +52,7 @@
             <VoiceCommandService Target="StandingDeskVoiceService"/>
         </Command>
 
-        <PhraseList Label="destination">
+        <PhraseList Label="height">
             <Item>Sitting</Item>
             <Item>Standing</Item>
             <Item>Lowest</Item>
@@ -72,7 +72,7 @@
             <VoiceCommandService Target="StandingDeskVoiceService"/>
         </Command>
 
-        <PhraseList Label="destination">
+        <PhraseList Label="height">
             <Item>Sitting</Item>
             <Item>Standing</Item>
             <Item>Lowest</Item>
@@ -92,7 +92,7 @@
             <VoiceCommandService Target="StandingDeskVoiceService"/>
         </Command>
 
-        <PhraseList Label="destination">
+        <PhraseList Label="height">
             <Item>Sitting</Item>
             <Item>Standing</Item>
             <Item>Lowest</Item>

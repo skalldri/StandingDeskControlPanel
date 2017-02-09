@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
-
+using Windows.ApplicationModel.Resources.Core;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace StandingDeskControlPanel.VoiceService
 {
@@ -40,7 +43,7 @@ namespace StandingDeskControlPanel.VoiceService
         /// </summary>
         DateTimeFormatInfo dateFormatInfo;
 
-        public void Run(IBackgroundTaskInstance taskInstance)
+        public async void Run(IBackgroundTaskInstance taskInstance)
         {
             serviceDeferral = taskInstance.GetDeferral();
 
@@ -63,7 +66,7 @@ namespace StandingDeskControlPanel.VoiceService
             // This should match the uap:AppService and VoiceCommandService references from the 
             // package manifest and VCD files, respectively. Make sure we've been launched by
             // a Cortana Voice Command.
-            if (triggerDetails != null && triggerDetails.Name == "AdventureWorksVoiceCommandService")
+            if (triggerDetails != null && triggerDetails.Name == "StandingDeskVoiceService")
             {
                 try
                 {
@@ -82,13 +85,9 @@ namespace StandingDeskControlPanel.VoiceService
                     // perform the appropriate command.
                     switch (voiceCommand.CommandName)
                     {
-                        case "whenIsTripToDestination":
-                            var destination = voiceCommand.Properties["destination"][0];
-                            await SendCompletionMessageForDestination(destination);
-                            break;
-                        case "cancelTripToDestination":
-                            var cancelDestination = voiceCommand.Properties["destination"][0];
-                            await SendCompletionMessageForCancellation(cancelDestination);
+                        case "moveDesk":
+                            var height = voiceCommand.Properties["height"][0];
+                            await SendCompletionMessageForHeight(height);
                             break;
                         default:
                             // As with app activation VCDs, we need to handle the possibility that
@@ -105,9 +104,94 @@ namespace StandingDeskControlPanel.VoiceService
             }
         }
 
+        /// <summary>
+        /// Handle the Trip Cancellation task. This task demonstrates how to prompt a user
+        /// for confirmation of an operation, show users a progress screen while performing
+        /// a long-running task, and showing a completion screen.
+        /// </summary>
+        /// <param name="destination">The name of a destination, expected to match the phrase list.</param>
+        /// <returns></returns>
+        private async Task SendCompletionMessageForHeight(string height)
+        {
+            // Begin loading data to search for the target store. If this operation is going to take a long time,
+            // for instance, requiring a response from a remote web service, consider inserting a progress screen 
+            // here, in order to prevent Cortana from timing out. 
+            string progressScreenString = string.Format(cortanaResourceMap.GetValue("MovingDeskTo", cortanaContext).ValueAsString, height);
+            await ShowProgressScreen(progressScreenString);
+
+            // TODO: move the desk to the requested height
+
+            // Provide a completion message to the user.
+            var userMessage = new VoiceCommandUserMessage();
+            string completedDeskMove = string.Format(cortanaResourceMap.GetValue("DeskMoveFinished", cortanaContext).ValueAsString, height);
+            userMessage.DisplayMessage = userMessage.SpokenMessage = completedDeskMove;
+            VoiceCommandResponse response = VoiceCommandResponse.CreateResponse(userMessage);
+            await voiceServiceConnection.ReportSuccessAsync(response);
+        }
+
+        /// <summary>
+        /// Show a progress screen. These should be posted at least every 5 seconds for a 
+        /// long-running operation, such as accessing network resources over a mobile 
+        /// carrier network.
+        /// </summary>
+        /// <param name="message">The message to display, relating to the task being performed.</param>
+        /// <returns></returns>
+        private async Task ShowProgressScreen(string message)
+        {
+            var userProgressMessage = new VoiceCommandUserMessage();
+            userProgressMessage.DisplayMessage = userProgressMessage.SpokenMessage = message;
+
+            VoiceCommandResponse response = VoiceCommandResponse.CreateResponse(userProgressMessage);
+            await voiceServiceConnection.ReportProgressAsync(response);
+        }
+
+        /// <summary>
+        /// Provide a simple response that launches the app. Expected to be used in the
+        /// case where the voice command could not be recognized (eg, a VCD/code mismatch.)
+        /// </summary>
+        private async void LaunchAppInForeground()
+        {
+            var userMessage = new VoiceCommandUserMessage();
+            userMessage.SpokenMessage = cortanaResourceMap.GetValue("LaunchingStandingDeskControlPanel", cortanaContext).ValueAsString;
+
+            var response = VoiceCommandResponse.CreateResponse(userMessage);
+
+            response.AppLaunchArgument = "";
+
+            await voiceServiceConnection.RequestAppLaunchAsync(response);
+        }
+
+        /// <summary>
+        /// Handle the completion of the voice command. Your app may be cancelled
+        /// for a variety of reasons, such as user cancellation or not providing 
+        /// progress to Cortana in a timely fashion. Clean up any pending long-running
+        /// operations (eg, network requests).
+        /// </summary>
+        /// <param name="sender">The voice connection associated with the command.</param>
+        /// <param name="args">Contains an Enumeration indicating why the command was terminated.</param>
+        private void OnVoiceCommandCompleted(VoiceCommandServiceConnection sender, VoiceCommandCompletedEventArgs args)
+        {
+            if (this.serviceDeferral != null)
+            {
+                this.serviceDeferral.Complete();
+            }
+        }
+
+        /// <summary>
+        /// When the background task is cancelled, clean up/cancel any ongoing long-running operations.
+        /// This cancellation notice may not be due to Cortana directly. The voice command connection will
+        /// typically already be destroyed by this point and should not be expected to be active.
+        /// </summary>
+        /// <param name="sender">This background task instance</param>
+        /// <param name="reason">Contains an enumeration with the reason for task cancellation</param>
         private void OnTaskCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
-            throw new NotImplementedException();
+            System.Diagnostics.Debug.WriteLine("Task cancelled, clean up");
+            if (this.serviceDeferral != null)
+            {
+                //Complete the service deferral
+                this.serviceDeferral.Complete();
+            }
         }
     }
 }

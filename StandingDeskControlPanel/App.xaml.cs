@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.Media.SpeechRecognition;
+using StandingDeskControlPanel.Common;
 
 namespace StandingDeskControlPanel
 {
@@ -33,6 +34,14 @@ namespace StandingDeskControlPanel
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+
+        /// <summary>
+        /// Navigation service, provides a decoupled way to trigger the UI Frame
+        /// to transition between views.
+        /// </summary>
+        public static NavigationService NavigationService { get; private set; }
+
+        private RootFrameNavigationHelper rootFrameNavigationHelper;
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -74,7 +83,7 @@ namespace StandingDeskControlPanel
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(View.Home), e.Arguments);
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
@@ -152,7 +161,7 @@ namespace StandingDeskControlPanel
             base.OnActivated(args);
 
             Type navigationToPageType;
-            ViewModel.TripVoiceCommand? navigationCommand = null;
+            ViewModel.VoiceCommandData? navigationCommand = null;
 
             // If the app was launched via a Voice Command, this corresponds to the "show trip to <location>" command. 
             // Protocol activation occurs when a tile is clicked within Cortana (via the background task)
@@ -176,13 +185,14 @@ namespace StandingDeskControlPanel
 
                 switch (voiceCommandName)
                 {
-                    case "showTripToDestination":
+                    /* Commenting out for now since there's only background service Cortana pages
+                     * case "showTripToDestination":
                         // Access the value of the {destination} phrase in the voice command
                         string destination = this.SemanticInterpretation("destination", speechRecognitionResult);
 
                         // Create a navigation command object to pass to the page. Any object can be passed in,
                         // here we're using a simple struct.
-                        navigationCommand = new ViewModel.TripVoiceCommand(
+                        navigationCommand = new ViewModel.VoiceCommandData(
                             voiceCommandName,
                             commandMode,
                             textSpoken,
@@ -190,10 +200,10 @@ namespace StandingDeskControlPanel
 
                         // Set the page to navigate to for this voice command.
                         navigationToPageType = typeof(View.TripDetails);
-                        break;
+                        break; */
                     default:
                         // If we can't determine what page to launch, go to the default entry point.
-                        navigationToPageType = typeof(View.TripListView);
+                        navigationToPageType = typeof(View.Home);
                         break;
                 }
             }
@@ -207,22 +217,22 @@ namespace StandingDeskControlPanel
                 Windows.Foundation.WwwFormUrlDecoder decoder = new Windows.Foundation.WwwFormUrlDecoder(commandArgs.Uri.Query);
                 var destination = decoder.GetFirstValueByName("LaunchContext");
 
-                navigationCommand = new ViewModel.TripVoiceCommand(
+                navigationCommand = new ViewModel.VoiceCommandData(
                                         "protocolLaunch",
                                         "text",
                                         "destination",
                                         destination);
 
-                navigationToPageType = typeof(View.TripDetails);
+                navigationToPageType = typeof(View.Home);
             }
             else
             {
                 // If we were launched via any other mechanism, fall back to the main page view.
                 // Otherwise, we'll hang at a splash screen.
-                navigationToPageType = typeof(View.TripListView);
+                navigationToPageType = typeof(View.Home);
             }
 
-            // Re"peat the same basic initialization as OnLaunched() above, taking into account whether
+            // Repeat the same basic initialization as OnLaunched() above, taking into account whether
             // or not the app is already active.
             Frame rootFrame = Window.Current.Content as Frame;
 
